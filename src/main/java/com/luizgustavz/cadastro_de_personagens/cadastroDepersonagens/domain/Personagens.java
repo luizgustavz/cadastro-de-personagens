@@ -14,6 +14,10 @@ public class Personagens {
     private String obra;
     private String autor;
 
+    @ManyToOne
+    @JoinColumn(name = "id_generos_personagens_fk")
+    private Generos generos;
+
     public Personagens() {
     }
 
