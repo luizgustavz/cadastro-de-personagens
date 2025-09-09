@@ -16,7 +16,7 @@ public class Generos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
     private CategoriaEnumerada categoria;
 
     @OneToMany(mappedBy = "generos")
