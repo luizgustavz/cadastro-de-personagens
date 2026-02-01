@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.luizgustavz.cadastro_de_personagens</groupId>
-	<artifactId>cadastroDepersonagens</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>cadastro-de-personagens</artifactId>
+	<version>0.0.2</version>
 	<name>cadastroDepersonagens</name>
-	<description>Simple Api in JAVA + SPRINGBOOT</description>
+	<description>Simples API para cadastro de personagens. Desenvolvida com Java 21, SpringBoot 3.5.5 e SGBD H2(Memória)</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -47,16 +47,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+
     </dependencies>
 
 	<build>
