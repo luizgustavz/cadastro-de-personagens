@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-@SpringBootTest(classes = CadastroDePersonagensApplication.class)
 public class PersonUnitTest {
 
     @Test
@@ -26,6 +25,10 @@ public class PersonUnitTest {
                 47);
 
         Assertions.assertNotNull(person);
+        Assertions.assertEquals("kakarott", person.getName());
+        Assertions.assertEquals("https://imgs.search.brave.com/o7oPkZ9g_u432qZpsPCGjsNvNZ_4Qr2H3azJYPkZQ2U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/", person.getImageUrl());
+        Assertions.assertEquals(Rank.A, person.getRank());
+        Assertions.assertEquals(47, person.getAge());
         System.out.println(person.toString());
     }
 
@@ -37,7 +40,14 @@ public class PersonUnitTest {
     }
 
     @Test
-    void deve_lancar_FieldsNotNullOrBlankException_quando_name_e_enviado_vazio_ou_branco(){
+    void deve_lancar_FieldsNotNullOrBlankException_quando_name_e_enviado_vazio(){
+
+        Person person = new Person();
+        Assertions.assertThrows(FieldsNotNullOrBlankException.class, () -> person.assignName(""));
+    }
+
+    @Test
+    void deve_lancar_FieldsNotNullOrBlankException_quando_name_e_enviado_branco(){
 
         Person person = new Person();
         Assertions.assertThrows(FieldsNotNullOrBlankException.class, () -> person.assignName("                   "));
@@ -90,7 +100,14 @@ public class PersonUnitTest {
     }
 
     @Test
-    void deve_lancar_FieldsNotNullOrBlankException_quando_url_enviada_vazia_ou_branco(){
+    void deve_lancar_FieldsNotNullOrBlankException_quando_url_enviada_vazia(){
+
+        Person person = new Person();
+        Assertions.assertThrows(FieldsNotNullOrBlankException.class, () -> person.assignUrl(""));
+    }
+
+    @Test
+    void deve_lancar_FieldsNotNullOrBlankException_quando_url_enviada_branco(){
 
         Person person = new Person();
         Assertions.assertThrows(FieldsNotNullOrBlankException.class, () -> person.assignUrl("              "));
