@@ -9,6 +9,8 @@ public enum Rank {
     C,
     D,
     E,
-    @JsonEnumDefaultValue UNKNOWN
+
+    @JsonEnumDefaultValue
+    UNKNOWN
 
 }

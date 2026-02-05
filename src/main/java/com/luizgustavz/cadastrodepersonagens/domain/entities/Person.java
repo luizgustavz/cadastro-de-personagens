@@ -99,6 +99,9 @@ public class Person implements Serializable {
     }
 
     public void assignRank(Rank rank){
+        if (rank == null){
+            rank = Rank.UNKNOWN;
+        }
         this.rank = rank;
     }
 
