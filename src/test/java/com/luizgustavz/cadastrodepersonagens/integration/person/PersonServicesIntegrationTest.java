@@ -1,4 +1,4 @@
-package com.luizgustavz.cadastrodepersonagens.integration;
+package com.luizgustavz.cadastrodepersonagens.integration.person;
 
 import com.luizgustavz.cadastrodepersonagens.CadastroDePersonagensApplication;
 import com.luizgustavz.cadastrodepersonagens.domain.entities.Person;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Transactional
 @SpringBootTest(classes = CadastroDePersonagensApplication.class)
+@ActiveProfiles("test")
 public class PersonServicesIntegrationTest {
 
     @Autowired

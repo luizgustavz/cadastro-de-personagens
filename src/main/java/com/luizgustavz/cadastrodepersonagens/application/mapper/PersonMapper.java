@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PersonMapper {
 
-    public final Person fromEntity(PersonRequest request){
+    public final Person toEntity(PersonRequest request){
         Person entity = new Person();
         entity.assignName(request.name());
         entity.assignUrl(request.imageUrl());
@@ -17,7 +17,7 @@ public class PersonMapper {
         return entity;
     }
 
-    public final PersonResponse fromDto(Person person){
+    public final PersonResponse toDto(Person person){
         PersonResponse response = new PersonResponse(
                 person.getId(),
                 person.getName(),

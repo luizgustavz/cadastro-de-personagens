@@ -128,6 +128,7 @@ public class Person implements Serializable {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) return false;
         if (!(o instanceof Person person)) return false;
         return Objects.equals(id, person.id);
     }

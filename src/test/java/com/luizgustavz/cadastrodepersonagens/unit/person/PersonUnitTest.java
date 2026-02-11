@@ -1,7 +1,5 @@
 package com.luizgustavz.cadastrodepersonagens.unit.person;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.luizgustavz.cadastrodepersonagens.CadastroDePersonagensApplication;
 import com.luizgustavz.cadastrodepersonagens.domain.entities.Person;
 import com.luizgustavz.cadastrodepersonagens.domain.enums.Rank;
 import com.luizgustavz.cadastrodepersonagens.domain.exceptions.FieldsNotNullOrBlankException;
@@ -10,8 +8,6 @@ import com.luizgustavz.cadastrodepersonagens.domain.exceptions.InvalidNameFormat
 import com.luizgustavz.cadastrodepersonagens.domain.exceptions.InvalidUriException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
 
 public class PersonUnitTest {
 
