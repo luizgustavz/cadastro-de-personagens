@@ -10,6 +10,6 @@ public sealed class DomainException extends RuntimeException permits
     }
 
     protected DomainException(Error e, String details){
-        super(e.value() + ":\n " + details);
+        super(e.value() + ": " + details);
     }
 }

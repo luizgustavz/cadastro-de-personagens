@@ -28,7 +28,6 @@ public class PersonServicesImpl implements CRUDServices<Person, UUID> {
         if (repository.existsByName(entity.getName())) {
             throw new DataViolationNameException();
         }
-
         return repository.save(entity);
     }
 
@@ -51,6 +50,7 @@ public class PersonServicesImpl implements CRUDServices<Person, UUID> {
     @Override
     @Transactional
     public void dropEntity(UUID uuid) {
+
         if (!repository.existsById(uuid)){
             throw new EntityNotFoundException();
         }
