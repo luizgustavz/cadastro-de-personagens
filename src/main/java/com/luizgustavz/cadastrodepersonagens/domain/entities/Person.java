@@ -33,6 +33,10 @@ public class Person implements Serializable {
 
     private int age;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
+
     public Person(){};
 
     public Person(String name, String url, Rank rank, int age){
@@ -114,6 +118,10 @@ public class Person implements Serializable {
         if (age <= 0 || age > 100){
             throw new InvalidAgeArgument();
         }
+    }
+
+    public void addMission(Mission mission){
+        this.mission = mission;
     }
 
     private void notNull(final String value){
