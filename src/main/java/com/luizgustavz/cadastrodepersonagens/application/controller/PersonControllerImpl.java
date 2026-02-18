@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 public class PersonControllerImpl implements PersonController {
 
@@ -31,4 +33,23 @@ public class PersonControllerImpl implements PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(saved));
     }
 
+    @Override
+    public ResponseEntity<PersonResponse> readEntity() {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<PersonResponse> readEntity(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<PersonResponse> readEntity(String name) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<PersonResponse> deleteEntity(UUID uuid) {
+        return null;
+    }
 }

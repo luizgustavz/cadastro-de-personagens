@@ -5,7 +5,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.stereotype.Component;
 
+@Component
 public record PersonRequest(
 
         @NotNull(message = "O campo NAME nao pode ser nulo")

@@ -18,14 +18,13 @@ public class PersonMapper {
     }
 
     public final PersonResponse toDto(Person person){
-        PersonResponse response = new PersonResponse(
+        return new PersonResponse(
                 person.getId(),
                 person.getName(),
                 person.getImageUrl(),
                 person.getRank(),
                 person.getAge()
         );
-        return response;
     }
 
 
