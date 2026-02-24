@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.luizgustavz.cadastro_de_personagens</groupId>
 	<artifactId>cadastro-de-personagens</artifactId>
-	<version>0.0.2</version>
+	<version>1.0.0</version>
 	<name>cadastroDepersonagens</name>
 	<description>Simples API para cadastro de personagens. Desenvolvida com Java 21, SpringBoot 3.5.5 e SGBD H2(Memória)</description>
 	<url/>
@@ -64,6 +64,11 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
     </dependencies>
