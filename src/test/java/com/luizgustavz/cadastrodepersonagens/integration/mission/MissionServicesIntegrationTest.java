@@ -1,16 +1,21 @@
 package com.luizgustavz.cadastrodepersonagens.integration.mission;
 
-import com.luizgustavz.cadastrodepersonagens.domain.entities.Mission;
+import com.luizgustavz.cadastrodepersonagens.application.dto.request.MissionRequest;
+import com.luizgustavz.cadastrodepersonagens.application.dto.response.MissionResponse;
+import com.luizgustavz.cadastrodepersonagens.application.mapper.MissionMapper;
 import com.luizgustavz.cadastrodepersonagens.domain.enums.Difficulty;
+import com.luizgustavz.cadastrodepersonagens.domain.enums.Rank;
 import com.luizgustavz.cadastrodepersonagens.domain.repositories.MissionRepository;
 import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.EntityNotFoundException;
-import com.luizgustavz.cadastrodepersonagens.infrastructure.services.MissionServicesImpl;
+import com.luizgustavz.cadastrodepersonagens.infrastructure.services.MissionServices;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,23 +27,29 @@ import java.util.UUID;
 public class MissionServicesIntegrationTest {
 
     @Autowired
-    private MissionServicesImpl services;
+    private MissionServices services;
 
     @Autowired
     private MissionRepository repository;
 
+    @Autowired
+    private MissionMapper mapper;
+
     @Test
     void deve_criar_missao_com_sucesso(){
 
-        Mission mission = new Mission();
-        mission.assignName("Roubar Amuleto");
-        mission.assignDifficulty(Difficulty.MEDIO);
+        MissionRequest mission = new MissionRequest(
+                "Roubar Amuleto",
+                Difficulty.MEDIO
+        );
 
-        Mission saved = services.createEntity(mission);
+        MissionResponse saved = services.createEntity(mission);
+        var id = saved.uuid();
 
-        Assertions.assertNotNull(saved.getUuid());
-        Assertions.assertNotNull(saved.getName());
-        Assertions.assertNotNull(saved.getDificulty());
+        Assertions.assertNotNull(saved);
+        Assertions.assertEquals(id, saved.uuid());
+        Assertions.assertEquals("roubar amuleto", saved.name());
+        Assertions.assertEquals(Difficulty.MEDIO, saved.difficulty());
 
         System.out.println(saved);
     }
@@ -46,120 +57,94 @@ public class MissionServicesIntegrationTest {
     @Test
     void deve_salvar_apenas_1_registro_quando_persistido_com_sucesso(){
 
-        Mission mission = new Mission();
-        mission.assignName("Roubar Amuleto");
-        mission.assignDifficulty(Difficulty.MEDIO);
+        MissionRequest mission = new MissionRequest(
+                "Roubar Amuleto",
+                Difficulty.MEDIO
+        );
 
-        List<Mission> missionList = new ArrayList<>();
-        missionList.add(services.createEntity(mission));
+        MissionResponse saved = services.createEntity(mission);
+        var id = saved.uuid();
 
-        Assertions.assertEquals(1, missionList.size());
+        List<MissionResponse> missions = new ArrayList<>();
+        missions.add(saved);
+
+        Assertions.assertEquals(1, missions.size());
+        Assertions.assertEquals(saved.uuid(), missions.getFirst().uuid());
     }
 
     @Test
     void deve_retornar_uma_missao_base_de_dados_com_sucesso(){
 
-        Mission mission = new Mission();
-        mission.assignName("Roubar Amuleto");
-        mission.assignDifficulty(Difficulty.MEDIO);
-        Mission saved = services.createEntity(mission);
+        MissionRequest mission = new MissionRequest(
+                "Roubar Amuleto",
+                Difficulty.MEDIO
+        );
 
-        Mission findByMission = services.findById(saved.getUuid());
+        MissionResponse saved = services.createEntity(mission);
+        MissionResponse findMissionByID = services.findByID(saved.uuid());
 
-        Assertions.assertNotNull(findByMission.getUuid());
-        Assertions.assertEquals(saved.getUuid(), findByMission.getUuid());
-        Assertions.assertEquals(saved.getName(), findByMission.getName());
-        Assertions.assertEquals(saved.getDificulty(), findByMission.getDificulty());
+        Assertions.assertNotNull(findMissionByID.uuid());
+        Assertions.assertEquals(saved.uuid(), findMissionByID.uuid());
+        Assertions.assertEquals("roubar amuleto", findMissionByID.name());
     }
 
     @Test
     void deve_lancar_EntityNotFoundException_quando_uuid_nao_encontrado(){
 
         UUID uuid = UUID.randomUUID();
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(uuid));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findByID(uuid));
     }
 
     @Test
     void deve_buscar_todas_entidades_com_sucesso(){
 
-        Mission one = new Mission();
-        one.assignName("Roubar Amuleto");
-        one.assignDifficulty(Difficulty.MEDIO);
+        MissionRequest mission1 = new MissionRequest(
+                "Roubar Amuleto",
+                Difficulty.MEDIO
+        );
 
-        Mission two = new Mission();
-        two.assignName("Roubar Relogio");
-        two.assignDifficulty(Difficulty.FACIL);
+        MissionRequest mission2 = new MissionRequest(
+                "Roubar Peteca",
+                Difficulty.FACIL
+        );
 
-        Mission savedOne = services.createEntity(one);
-        Mission savedTwo = services.createEntity(two);
+        MissionResponse saved1 = services.createEntity(mission1);
+        MissionResponse saved2 = services.createEntity(mission2);
 
-        List<Mission> recordMissoes = services.findAllEntities();
+        List<MissionResponse> missions = services.findAll();
 
-        Assertions.assertEquals(2, recordMissoes.size());
-        Assertions.assertEquals(savedOne.getUuid(), recordMissoes.get(0).getUuid());
-        Assertions.assertEquals(savedTwo.getUuid(), recordMissoes.get(1).getUuid());
+        Assertions.assertEquals(2, missions.size());
+        Assertions.assertEquals(saved1.uuid(), missions.get(0).uuid());
+        Assertions.assertEquals(saved2.uuid(), missions.get(1).uuid());
     }
 
     @Test
     void deve_retornar_lista_vazia_quando_nao_existe_registro_salvo(){
 
-        List<Mission> recordMissoes = services.findAllEntities();
+        List<MissionResponse> missions = services.findAll();
 
-        Assertions.assertEquals(0,  recordMissoes.size());
-        Assertions.assertTrue(recordMissoes.isEmpty());
-    }
-
-    @Test
-    void deve_buscar_missao_pelo_nome_com_sucesso(){
-
-        Mission primeiro = new Mission();
-        primeiro.assignName("Roubar Amuleto");
-        primeiro.assignDifficulty(Difficulty.MEDIO);
-
-        Mission segundo = new Mission();
-        segundo.assignName("Roubar Relogio");
-        segundo.assignDifficulty(Difficulty.FACIL);
-
-        Mission primeiroSalvo = services.createEntity(primeiro);
-        Mission segundoSalvo = services.createEntity(segundo);
-
-        Mission recuperaEntityPeloNome = services.findByName("Roubar Amuleto");
-
-        Assertions.assertNotNull(recuperaEntityPeloNome.getUuid());
-        Assertions.assertEquals(primeiro.getUuid(), recuperaEntityPeloNome.getUuid());
-    }
-
-    @Test
-    void deve_lancar_EntityNotFoundException_quando_registro_nao_encontrado_pelo_nome(){
-
-        Mission primeiro = new Mission();
-        primeiro.assignName("Roubar Amuleto");
-        primeiro.assignDifficulty(Difficulty.MEDIO);
-
-        Mission primeiroSalvo = services.createEntity(primeiro);
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findByName("Roubar Relogio"));
+        Assertions.assertEquals(0,  missions.size());
+        assertThat(services.findAll()).isEmpty();
     }
 
     @Test
     void deve_remover_registro_com_sucesso(){
 
-        Mission primeiro = new Mission();
-        primeiro.assignName("Roubar Amuleto");
-        primeiro.assignDifficulty(Difficulty.MEDIO);
+        MissionRequest mission1 = new MissionRequest(
+                "Roubar Amuleto",
+                Difficulty.MEDIO
+        );
 
-        Mission primeiroSalvo = services.createEntity(primeiro);
+        MissionResponse saved = services.createEntity(mission1);
+        services.dropEntity(saved.uuid());
 
-        services.dropEntity(primeiroSalvo.getUuid());
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(primeiroSalvo.getUuid()));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findByID(saved.uuid()));
     }
 
     @Test
     void deve_lancar_EntityNotFoundException_quando_id_nao_encontrado(){
 
         UUID uuid = UUID.randomUUID();
-
         Assertions.assertThrows(EntityNotFoundException.class, () -> services.dropEntity(uuid));
     }
 }
