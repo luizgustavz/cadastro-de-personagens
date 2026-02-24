@@ -2,7 +2,7 @@ package com.luizgustavz.cadastrodepersonagens.application.controller;
 
 import com.luizgustavz.cadastrodepersonagens.application.dto.request.PersonRequest;
 import com.luizgustavz.cadastrodepersonagens.application.dto.response.PersonResponse;
-import com.luizgustavz.cadastrodepersonagens.infrastructure.services.PersonServicesImpl;
+import com.luizgustavz.cadastrodepersonagens.infrastructure.services.PersonServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,10 +13,10 @@ import java.util.UUID;
 @RestController
 public class PersonControllerImpl implements PersonController {
 
-    private final PersonServicesImpl services;
+    private final PersonServices services;
 
     public PersonControllerImpl(
-            PersonServicesImpl services
+            PersonServices services
     ){
             this.services = services;
     }

@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Personagens")
@@ -17,15 +18,15 @@ public interface PersonController {
     ResponseEntity<PersonResponse> createEntity(@Valid @RequestBody PersonRequest request);
 
     @GetMapping
-    ResponseEntity<PersonResponse> readEntity();
+    ResponseEntity<List<PersonResponse>> readEntity();
 
-    @GetMapping("/{id}")
+    @GetMapping("/{uuid}")
     ResponseEntity<PersonResponse> readEntity(@PathVariable UUID uuid);
 
-    @GetMapping(params = "/{name}")
+    @GetMapping(params = "name")
     ResponseEntity<PersonResponse> readEntity(@RequestParam String name);
 
     @DeleteMapping(path = "/{uuid}")
-    ResponseEntity<PersonResponse> deleteEntity(@PathVariable UUID uuid);
+    ResponseEntity<Void> deleteEntity(@PathVariable UUID uuid);
 
 }

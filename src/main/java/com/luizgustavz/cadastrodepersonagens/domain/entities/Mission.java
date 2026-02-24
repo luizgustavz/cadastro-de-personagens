@@ -25,7 +25,7 @@ public class Mission implements Serializable {
 
     private Difficulty difficulty;
 
-    @OneToMany
+    @OneToMany(mappedBy = "mission")
     private List<Person> persons = new ArrayList<>();
 
     public Mission() {}

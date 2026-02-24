@@ -1,12 +1,14 @@
 package com.luizgustavz.cadastrodepersonagens.integration.person;
 
 import com.luizgustavz.cadastrodepersonagens.CadastroDePersonagensApplication;
-import com.luizgustavz.cadastrodepersonagens.domain.entities.Person;
+import com.luizgustavz.cadastrodepersonagens.application.dto.request.PersonRequest;
+import com.luizgustavz.cadastrodepersonagens.application.dto.response.PersonResponse;
+import com.luizgustavz.cadastrodepersonagens.application.mapper.PersonMapper;
 import com.luizgustavz.cadastrodepersonagens.domain.enums.Rank;
 import com.luizgustavz.cadastrodepersonagens.domain.repositories.PersonRepository;
 import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.DataViolationNameException;
 import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.EntityNotFoundException;
-import com.luizgustavz.cadastrodepersonagens.infrastructure.services.PersonServicesImpl;
+import com.luizgustavz.cadastrodepersonagens.infrastructure.services.PersonServices;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,94 +28,95 @@ import java.util.UUID;
 public class PersonServicesIntegrationTest {
 
     @Autowired
-    private PersonServicesImpl services;
+    private PersonServices services;
 
     @Autowired
     private PersonRepository repository;
 
+    @Autowired
+    private PersonMapper mapper;
+
     @Test
     void deve_salvar_personagem_com_sucesso(){
 
-        Person person = new Person();
+        PersonRequest request = new PersonRequest("Goku", "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc", Rank.A, 57);
 
-        person.assignName("Goku");
-        person.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        person.assignRank(Rank.A);
-        person.assignAge(47);
+        PersonResponse response = services.createEntity(request);
 
-        Person saved = services.createEntity(person);
+        Assertions.assertNotNull(response.id());
+        Assertions.assertNotNull(response.name());
+        Assertions.assertNotNull(response.imageUrl());
+        Assertions.assertNotNull(response.rank());
 
-        Assertions.assertNotNull(saved.getId());
-        Assertions.assertNotNull(saved.getName());
-        Assertions.assertNotNull(saved.getImageUrl());
-        Assertions.assertNotNull(saved.getRank());
+        Assertions.assertEquals("goku",  response.name());
+        Assertions.assertEquals("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",  response.imageUrl());
+        Assertions.assertEquals(Rank.A,  response.rank());
+        Assertions.assertEquals(57,  response.age());
 
-        System.out.println(saved.toString());
+        System.out.println(request.toString());
     }
 
     @Test
     void deve_lancar_DataViolationNameException_quando_nome_existe_na_base_de_dados(){
 
-        Person primeiroPerson = new Person();
+        PersonRequest request1 = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        primeiroPerson.assignName("Goku");
-        primeiroPerson.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        primeiroPerson.assignRank(Rank.A);
-        primeiroPerson.assignAge(47);
+        PersonResponse response1 = services.createEntity(request1);
 
-        Person primeiroPersonSalvo = services.createEntity(primeiroPerson);
+        PersonRequest request2 = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);;
 
-        Person segundoPerson = new Person();
-
-        segundoPerson.assignName("Goku");
-        segundoPerson.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        segundoPerson.assignRank(Rank.B);
-        segundoPerson.assignAge(48);
-
-        Assertions.assertThrows(DataViolationNameException.class, () -> services.createEntity(segundoPerson));
-
+        Assertions.assertThrows(DataViolationNameException.class, () -> services.createEntity(request2));
     }
 
     @Test
     void deve_salvar_apenas_uma_entidade_quando_persistida(){
 
-        Person person = new Person();
+        PersonRequest request = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);;
 
-        person.assignName("Goku");
-        person.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        person.assignRank(Rank.B);
-        person.assignAge(48);
+        PersonResponse response = services.createEntity(request);
 
-        List<Person> tb_persons = new ArrayList<>();
-        tb_persons.add(services.createEntity(person));
+
+        List<PersonResponse> tb_persons = new ArrayList<>();
+        tb_persons.add(response);
 
         Assertions.assertEquals(1, tb_persons.size());
+        Assertions.assertNotNull(tb_persons.getFirst().id());
     }
 
     @Test
     void deve_buscar_apenas_uma_entidade_quando_findById_acionado_verificando_id_corresponde_a_chamada(){
 
-        Person primeiro = new Person();
+        PersonRequest request = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);;
 
-        primeiro.assignName("Goku");
-        primeiro.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        primeiro.assignRank(Rank.A);
-        primeiro.assignAge(48);
+        PersonRequest request2 = new PersonRequest(
+                "Goku Black",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);;
 
-        Person segundo = new Person();
+        PersonResponse saved1 = services.createEntity(request);
+        PersonResponse saved2 = services.createEntity(request2);
 
-        segundo.assignName("Goku Black");
-        segundo.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        segundo.assignRank(Rank.B);
-        segundo.assignAge(48);
+        PersonResponse findByPerson1 = services.findById(saved1.id());
 
-        var savedPrimeiroPerson = services.createEntity(primeiro);
-        var savedSegundoPerson = services.createEntity(segundo);
-
-        Person findPerson = services.findById(savedPrimeiroPerson.getId());
-
-        Assertions.assertEquals(savedPrimeiroPerson.getId(), findPerson.getId());
-        Assertions.assertEquals(savedPrimeiroPerson.getName(), findPerson.getName());
+        Assertions.assertEquals(saved1.id(), findByPerson1.id());
+        Assertions.assertEquals("goku", findByPerson1.name());
     }
 
     @Test
@@ -126,32 +129,29 @@ public class PersonServicesIntegrationTest {
     @Test
     void deve_retornar_todos_objetos_do_repositorio_quando_chamado_metodo_findAll(){
 
-        Person primeiro = new Person();
+        PersonRequest request1 = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        primeiro.assignName("Goku");
-        primeiro.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        primeiro.assignRank(Rank.A);
-        primeiro.assignAge(48);
+        PersonRequest request2 = new PersonRequest(
+                "Goku Black",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        Person segundo = new Person();
+        PersonRequest request3 = new PersonRequest(
+                "Goku Super Sayajin",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        segundo.assignName("Vegeta");
-        segundo.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        segundo.assignRank(Rank.A);
-        segundo.assignAge(48);
+        PersonResponse response1 = services.createEntity(request1);
+        PersonResponse response2 = services.createEntity(request2);
+        PersonResponse response3 = services.createEntity(request3);
 
-        Person terceiro = new Person();
-
-        terceiro.assignName("Bulma");
-        terceiro.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        terceiro.assignRank(Rank.A);
-        terceiro.assignAge(48);
-
-        var primeiroSalvo = services.createEntity(primeiro);
-        var segundoSalvo = services.createEntity(segundo);
-        var terceiroSalvo = services.createEntity(terceiro);
-
-        List<Person> listPerson = services.findAllEntities();
+        List<PersonResponse> listPerson = services.findAllEntities();
 
         Assertions.assertEquals(3, listPerson.size());
     }
@@ -159,66 +159,63 @@ public class PersonServicesIntegrationTest {
     @Test
     void deve_retornar_uma_lista_vazia_quando_nao_tem_objetos_salvos(){
 
-        List<Person> persons = services.findAllEntities();
+        List<PersonResponse> persons = services.findAllEntities();
         assertThat(persons).isEmpty();
     }
 
     @Test
     void deve_retornar_um_unico_objeto_quando_findByName_e_chamado(){
 
-        Person primeiroPerson = new Person();
+        PersonRequest request1 = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        primeiroPerson.assignName("Goku");
-        primeiroPerson.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        primeiroPerson.assignRank(Rank.A);
-        primeiroPerson.assignAge(48);
+        PersonRequest request2 = new PersonRequest(
+                "Goku Black",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.C,
+                89);
 
-        Person segundoPerson = new Person();
+        PersonResponse saved1 =  services.createEntity(request1);
+        PersonResponse saved2 =  services.createEntity(request2);
 
-        segundoPerson.assignName("Goku Black");
-        segundoPerson.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        segundoPerson.assignRank(Rank.B);
-        segundoPerson.assignAge(48);
+        Assertions.assertDoesNotThrow(() -> services.findByName("goku"));
 
-        var primeiroSaved = services.createEntity(primeiroPerson);
-        var segundosSaved = services.createEntity(segundoPerson);
+        PersonResponse findByName = services.findByName("goku");
 
-        Person person = services.findByName("Goku");
-
-        Assertions.assertEquals(primeiroSaved.getName(), person.getName());
-        Assertions.assertNotEquals(segundosSaved.getRank(), person.getRank());
+        Assertions.assertEquals(saved1.id(), findByName.id());
+        Assertions.assertEquals(saved1.name(), findByName.name());
     }
 
     @Test
     void deve_lancar_EntityNotFoundException_quando_objeto_nao_existir_ou_nao_nome_errado() {
 
-        Person person = new Person();
+        PersonRequest request1 = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        person.assignName("Goku Black");
-        person.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        person.assignRank(Rank.B);
-        person.assignAge(48);
+        PersonResponse saved = services.createEntity(request1);
 
-        var personSaved = services.createEntity(person);
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findByName("Goku"));
-        Assertions.assertEquals("goku black", personSaved.getName());
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findByName("Vegeta"));
     }
 
     @Test
     void deve_deletar_person_com_sucesso(){
 
-        Person person = new Person();
+        PersonRequest request1 = new PersonRequest(
+                "Goku",
+                "https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc",
+                Rank.A,
+                57);
 
-        person.assignName("Goku Black");
-        person.assignUrl("https://imgs.search.brave.com/CsojGCwyLxS6Q5jqhkW9-Bmtc22Ph8596a_KeLgw964/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvc3Vw/ZXItc2FpeWFuLTQt/Z29rdS1kYnotNGst/bTRtamh2ZnluYzNo/M3U4Yi5qcGc");
-        person.assignRank(Rank.B);
-        person.assignAge(48);
+        PersonResponse saved = services.createEntity(request1);
+        services.dropEntity(saved.id());
 
-        var saved = services.createEntity(person);
-        services.dropEntity(saved.getId());
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(saved.getId()));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(saved.id()));
     }
 
     @Test
@@ -227,10 +224,4 @@ public class PersonServicesIntegrationTest {
         UUID uuid = UUID.randomUUID();
         Assertions.assertThrows(EntityNotFoundException.class, () -> services.dropEntity(uuid));
     }
-
-
-
-
-
-
 }

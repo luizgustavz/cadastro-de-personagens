@@ -5,6 +5,7 @@ import com.luizgustavz.cadastrodepersonagens.application.dto.response.PersonResp
 import com.luizgustavz.cadastrodepersonagens.application.mapper.PersonMapper;
 import com.luizgustavz.cadastrodepersonagens.domain.entities.Person;
 import com.luizgustavz.cadastrodepersonagens.domain.repositories.PersonRepository;
+import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.DataViolationNameException;
 import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PersonServicesImpl {
+public class PersonServices {
 
     private final PersonRepository repository;
     private final PersonMapper mapper;
 
-    public PersonServicesImpl(
+    public PersonServices(
             PersonRepository repository,
             PersonMapper mapper
     ) {
@@ -26,6 +27,7 @@ public class PersonServicesImpl {
     }
 
     public PersonResponse createEntity(PersonRequest request) {
+        if (repository.existsByName(request.name().toLowerCase())) throw new DataViolationNameException();
         Person saved = repository.save(mapper.toEntity(request));
         return mapper.toDto(saved);
     }
@@ -46,6 +48,7 @@ public class PersonServicesImpl {
     }
 
     public void dropEntity(UUID uuid) {
+        if (!repository.existsById(uuid)) throw new EntityNotFoundException();
         repository.deleteById(uuid);
     }
 }
