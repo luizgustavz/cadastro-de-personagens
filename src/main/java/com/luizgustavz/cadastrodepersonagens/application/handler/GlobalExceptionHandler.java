@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-abstract class HandlerException {
+public class GlobalExceptionHandler {
 
     Map<String, Object> handlerResponse = new HashMap<>();
     final String MESSAGE = "Erros de entrada de dados";
