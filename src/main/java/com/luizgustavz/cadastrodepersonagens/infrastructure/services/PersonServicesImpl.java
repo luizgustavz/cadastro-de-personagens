@@ -1,63 +1,51 @@
 package com.luizgustavz.cadastrodepersonagens.infrastructure.services;
 
+import com.luizgustavz.cadastrodepersonagens.application.dto.request.PersonRequest;
+import com.luizgustavz.cadastrodepersonagens.application.dto.response.PersonResponse;
+import com.luizgustavz.cadastrodepersonagens.application.mapper.PersonMapper;
 import com.luizgustavz.cadastrodepersonagens.domain.entities.Person;
 import com.luizgustavz.cadastrodepersonagens.domain.repositories.PersonRepository;
-import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.DataViolationNameException;
 import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PersonServicesImpl implements CRUDServices<Person, UUID> {
+public class PersonServicesImpl {
 
     private final PersonRepository repository;
+    private final PersonMapper mapper;
 
     public PersonServicesImpl(
-            PersonRepository repository
+            PersonRepository repository,
+            PersonMapper mapper
     ) {
             this.repository = repository;
+            this.mapper = mapper;
     }
 
-    @Override
-    @Transactional
-    public Person createEntity(Person entity) {
-
-        if (repository.existsByName(entity.getName())) {
-            throw new DataViolationNameException();
-        }
-        return repository.save(entity);
+    public PersonResponse createEntity(PersonRequest request) {
+        Person saved = repository.save(mapper.toEntity(request));
+        return mapper.toDto(saved);
     }
 
-    @Override
-    public Person findById(UUID uuid) {
-        return repository.findById(uuid).orElseThrow(EntityNotFoundException::new);
+    public PersonResponse findById(UUID uuid) {
+        Person entity = repository.findById(uuid).orElseThrow(EntityNotFoundException::new);
+        return mapper.toDto(entity);
     }
 
-    @Override
-    public List<Person> findAllEntities() {
-        return repository.findAll();
+    public List<PersonResponse> findAllEntities() {
+        List<Person> entities = repository.findAll();
+        return entities.stream().map(mapper::toDto).toList();
     }
 
-    @Override
-    public Person findByName(String n) {
-        final String name = normalize(n);
-        return repository.findByName(name).orElseThrow(EntityNotFoundException::new);
+    public PersonResponse findByName(String n) {
+        Person person = repository.findByName(n).orElseThrow(EntityNotFoundException::new);
+        return mapper.toDto(person);
     }
 
-    @Override
-    @Transactional
     public void dropEntity(UUID uuid) {
-
-        if (!repository.existsById(uuid)){
-            throw new EntityNotFoundException();
-        }
         repository.deleteById(uuid);
-    }
-
-    private static String normalize(final String v){
-        return v.toLowerCase();
     }
 }
