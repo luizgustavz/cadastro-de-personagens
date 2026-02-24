@@ -5,6 +5,6 @@ import com.luizgustavz.cadastrodepersonagens.infrastructure.exceptions.message.E
 public final class EntityNotFoundException extends ServiceViolationException {
 
     public EntityNotFoundException() {
-        super(Error.PERSON_NOT_FOUND);
+        super(Error.ENTITY_NOT_FOUND);
     }
 }
