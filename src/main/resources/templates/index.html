@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastro de Personagens</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 80px;
+            background-color: #f8f9fa;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1e1e2f, #343a40);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding: 30px 0;
+        }
+
+        .card img {
+            max-height: 300px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-purple">API Personagens</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="menu">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link active" th:href="@{/ui/home}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ui/person}">Personagens</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Missões</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1 class="display-4 text-warning">API para Cadastro de Personagens</h1>
+        <p class="lead mt-3">Gerencie personagens e missões de forma simples e organizada 🚀</p>
+        <a href="#" class="btn btn-warning btn-lg mt-3">Começar</a>
+    </div>
+</section>
+
+<main class="container mt-5">
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <img src="https://imgs.search.brave.com/Mg0Mfmmk_nKTeJ6qrS_djp_GSt0EEGizYkKgD4SlEFI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zbWFs/bGltZy5wbmdrZXku/Y29tL3BuZy9zbWFs/bC8xMTQtMTE0NjYw/NF9wbmctdG8tcGl4/ZWwtYXJ0LXBuZy1m/cmVlLXBpeGVsLWFy/dC5wbmc" class="card-img-top" alt="Personagem pixelado">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Sistema de Cadastro</h5>
+                    <p class="card-text">Projeto desenvolvido para praticar conceitos de API REST com Spring.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="mb-5">
+        <h3 class="section-title">Sobre a Aplicação</h3>
+        <p>
+            O projeto Cadastro de Personagens é derivado da aplicação Cadastro de Ninjas do curso Batismo de Java.
+            Com o conhecimento adquirido durante o curso, desenvolvi esse projeto para colocar em prática todos os conceitos apresentados.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h4 class="section-title">Tecnologias Utilizadas</h4>
+        <ul class="list-group list-group-flush shadow-sm rounded">
+            <li class="list-group-item">☕ Java</li>
+            <li class="list-group-item">🌱 Spring Framework</li>
+            <li class="list-group-item">🗄️ Banco de Dados H2</li>
+            <li class="list-group-item">🌐 Thymeleaf</li>
+            <li class="list-group-item">🌐 Bootstrap 5</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4 class="section-title">O que a Aplicação Faz</h4>
+        <p>
+            A aplicação é uma API REST que possibilita o cadastro de personagens e missões.
+            Você pode cadastrar, listar, buscar por ID e deletar registros,
+            respeitando as regras de negócio definidas na camada de service.
+        </p>
+    </section>
+
+</main>
+
+<footer class="bg-dark text-light text-center">
+    <div class="container">
+        <p class="mb-1">Desenvolvido por <strong>Luiz Gustavo</strong></p>
+        <p class="mb-0">Curso <span class="text-warning">Batismo de Java</span></p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
