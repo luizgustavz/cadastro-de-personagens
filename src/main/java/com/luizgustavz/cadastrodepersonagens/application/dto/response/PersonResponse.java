@@ -5,7 +5,7 @@ import com.luizgustavz.cadastrodepersonagens.domain.enums.Rank;
 import java.util.UUID;
 
 public record PersonResponse(
-        UUID id,
+        UUID uuid,
         String name,
         String imageUrl,
         Rank rank,

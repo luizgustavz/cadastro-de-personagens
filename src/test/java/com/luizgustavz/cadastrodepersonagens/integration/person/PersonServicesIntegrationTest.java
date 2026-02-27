@@ -43,7 +43,7 @@ public class PersonServicesIntegrationTest {
 
         PersonResponse response = services.createEntity(request);
 
-        Assertions.assertNotNull(response.id());
+        Assertions.assertNotNull(response.uuid());
         Assertions.assertNotNull(response.name());
         Assertions.assertNotNull(response.imageUrl());
         Assertions.assertNotNull(response.rank());
@@ -77,7 +77,7 @@ public class PersonServicesIntegrationTest {
     }
 
     @Test
-    void deve_salvar_apenas_uma_entidade_quando_persistida(){
+    void deve_salvar_apenas_uma_entuuidade_quando_persistuuida(){
 
         PersonRequest request = new PersonRequest(
                 "Goku",
@@ -92,11 +92,11 @@ public class PersonServicesIntegrationTest {
         tb_persons.add(response);
 
         Assertions.assertEquals(1, tb_persons.size());
-        Assertions.assertNotNull(tb_persons.getFirst().id());
+        Assertions.assertNotNull(tb_persons.getFirst().uuid());
     }
 
     @Test
-    void deve_buscar_apenas_uma_entidade_quando_findById_acionado_verificando_id_corresponde_a_chamada(){
+    void deve_buscar_apenas_uma_entuuidade_quando_findById_acionado_verificando_uuid_corresponde_a_chamada(){
 
         PersonRequest request = new PersonRequest(
                 "Goku",
@@ -113,17 +113,17 @@ public class PersonServicesIntegrationTest {
         PersonResponse saved1 = services.createEntity(request);
         PersonResponse saved2 = services.createEntity(request2);
 
-        PersonResponse findByPerson1 = services.findById(saved1.id());
+        PersonResponse findByPerson1 = services.findById(saved1.uuid());
 
-        Assertions.assertEquals(saved1.id(), findByPerson1.id());
+        Assertions.assertEquals(saved1.uuid(), findByPerson1.uuid());
         Assertions.assertEquals("goku", findByPerson1.name());
     }
 
     @Test
-    void deve_lancar_EntityNotFoundException_quando_id_informado_nao_existe_base_de_dados_ou_informado_erroneamente(){
+    void deve_lancar_EntityNotFoundException_quando_uuid_informado_nao_existe_base_de_dados_ou_informado_erroneamente(){
 
-        UUID uuid = UUID.randomUUID();
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(uuid));
+        UUID uuuuid = UUID.randomUUID();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(uuuuid));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class PersonServicesIntegrationTest {
 
         PersonResponse findByName = services.findByName("goku");
 
-        Assertions.assertEquals(saved1.id(), findByName.id());
+        Assertions.assertEquals(saved1.uuid(), findByName.uuid());
         Assertions.assertEquals(saved1.name(), findByName.name());
     }
 
@@ -213,15 +213,15 @@ public class PersonServicesIntegrationTest {
                 57);
 
         PersonResponse saved = services.createEntity(request1);
-        services.dropEntity(saved.id());
+        services.dropEntity(saved.uuid());
 
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(saved.id()));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.findById(saved.uuid()));
     }
 
     @Test
-    void deve_lancar_EntityNotFoundException_quando_id_nao_existe(){
+    void deve_lancar_EntityNotFoundException_quando_uuid_nao_existe(){
 
-        UUID uuid = UUID.randomUUID();
-        Assertions.assertThrows(EntityNotFoundException.class, () -> services.dropEntity(uuid));
+        UUID uuuuid = UUID.randomUUID();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> services.dropEntity(uuuuid));
     }
 }
